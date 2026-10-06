@@ -10,6 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
+packetio-mcp = "pktgen_mcp.server:main"
 pktgen-mcp = "pktgen_mcp.server:main"
 
 [project.optional-dependencies]
