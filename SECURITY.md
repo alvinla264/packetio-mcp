@@ -18,8 +18,8 @@ updating source does not change an already-installed interpreter.
 
 ## Capture storage
 
-The default directory is `~/.local/state/pktgen-mcp/captures`, configurable via
-`PKTGEN_CAPTURE_DIR`. Existing roots must belong to the server user and have no
+The default directory is `~/.local/state/packetio-mcp/captures`, configurable via
+`PACKETIO_CAPTURE_DIR`. Existing roots must belong to the server user and have no
 group/other permission bits (0700 recommended). New directories are private;
 new captures and JSON reports are 0600. Unsafe existing directories are refused,
 not silently chmodded. Evidence is not automatically moved from old locations.

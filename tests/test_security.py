@@ -4,19 +4,19 @@ import stat
 
 import pytest
 
-from pktgen_mcp.pcap import (PcapError, PcapRecord, resolve_capture_path,
+from packetio_mcp.pcap import (PcapError, PcapRecord, resolve_capture_path,
                               read_pcap, write_pcap, write_pcapng, list_captures)
-from pktgen_mcp.file_safety import private_output
-from pktgen_mcp.filters import FilterError, compile_filter
-from pktgen_mcp.packets import PacketError, parse_hex_bytes, MAX_PACKET_BYTES
-from pktgen_mcp import server, testing
+from packetio_mcp.file_safety import private_output
+from packetio_mcp.filters import FilterError, compile_filter
+from packetio_mcp.packets import PacketError, parse_hex_bytes, MAX_PACKET_BYTES
+from packetio_mcp import server, testing
 
 
 @pytest.fixture
 def capture_root(tmp_path, monkeypatch):
     root = tmp_path / 'captures'
     root.mkdir(mode=0o700)
-    monkeypatch.setenv('PKTGEN_CAPTURE_DIR', str(root))
+    monkeypatch.setenv('PACKETIO_CAPTURE_DIR', str(root))
     return root
 
 
@@ -86,7 +86,7 @@ def test_existing_files_and_publish_race_are_not_overwritten(capture_root):
             handle.write(b'new')
             raced.write_bytes(b'race winner')
     assert raced.read_bytes() == b'race winner'
-    assert not list(capture_root.glob('.pktgen-*.tmp'))
+    assert not list(capture_root.glob('.packetio-*.tmp'))
 
 
 def test_failed_write_does_not_publish_partial_capture(capture_root):
@@ -94,7 +94,7 @@ def test_failed_write_does_not_publish_partial_capture(capture_root):
     with pytest.raises(PcapError):
         write_pcap(target, [('not bytes', 1.0)])
     assert not target.exists()
-    assert not list(capture_root.glob('.pktgen-*.tmp'))
+    assert not list(capture_root.glob('.packetio-*.tmp'))
 
 
 def test_fifo_read_rejected_without_blocking(capture_root):

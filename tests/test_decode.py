@@ -11,7 +11,7 @@ import struct
 
 import pytest
 
-from pktgen_mcp.decode import (
+from packetio_mcp.decode import (
     decode_arp,
     decode_dhcp,
     decode_dns,
@@ -24,7 +24,7 @@ from pktgen_mcp.decode import (
     decode_udp,
     summarize_frame,
 )
-from pktgen_mcp.packets import build_ethernet_frame, hex_bytes
+from packetio_mcp.packets import build_ethernet_frame, hex_bytes
 
 ARP_REQUEST = (
     "00 01 08 00 06 04 00 01 02 11 22 33 44 55 "

@@ -38,7 +38,7 @@ def tshark_query(filename: str, display_filter: str | None, fields: list[str],
         parsed = read_pcap(resolve_capture_path(filename), max_records=max_packets, start_index=start_index)
         if sum(len(r.data) for r in parsed.records) > 4 * 1024 * 1024:
             return {"ok": False, "error": "analysis input exceeds 4 MiB"}
-        with tempfile.TemporaryDirectory(prefix="pktgen-query-") as directory:
+        with tempfile.TemporaryDirectory(prefix="packetio-query-") as directory:
             capture = Path(directory)/"query.pcapng"
             write_pcapng(capture, parsed.records)
             args = [executable, "-n", "-r", str(capture), "-T", "json"]

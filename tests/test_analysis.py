@@ -6,12 +6,12 @@ import struct
 
 import pytest
 
-from pktgen_mcp.analysis import (
+from packetio_mcp.analysis import (
     count_protocols,
     frame_summaries,
     summarise_frames,
 )
-from pktgen_mcp.packets import build_ethernet_frame, hex_bytes
+from packetio_mcp.packets import build_ethernet_frame, hex_bytes
 
 
 def _ipv4(protocol: int, source: str, destination: str, body: bytes) -> bytes:

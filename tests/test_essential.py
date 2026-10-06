@@ -8,10 +8,10 @@ from scapy.layers.dns import DNS
 from scapy.layers.dhcp import DHCP
 from scapy.packet import Raw
 
-from pktgen_mcp.decode import decode_link_frame
-from pktgen_mcp.pcap import write_pcap, write_pcapng, read_pcap, PcapRecord
-from pktgen_mcp.investigation import scan_capture, inspect_stream
-from pktgen_mcp.workflows import protocol_frame
+from packetio_mcp.decode import decode_link_frame
+from packetio_mcp.pcap import write_pcap, write_pcapng, read_pcap, PcapRecord
+from packetio_mcp.investigation import scan_capture, inspect_stream
+from packetio_mcp.workflows import protocol_frame
 
 ETH = {'protocol':'ethernet','fields':{'src':'02:00:00:00:00:01','dst':'02:00:00:00:00:02'}}
 IP4 = {'protocol':'ipv4','fields':{'src':'192.0.2.1','dst':'192.0.2.2'}}
@@ -30,7 +30,7 @@ def test_non_initial_fragment_has_no_transport():
 
 
 def test_stream_ranges_and_conflicts(tmp_path, monkeypatch):
-    monkeypatch.setenv('PKTGEN_CAPTURE_DIR',str(tmp_path))
+    monkeypatch.setenv('PACKETIO_CAPTURE_DIR',str(tmp_path))
     records=[]
     for seq, body in [(100,b'abc'),(106,b'ghi'),(103,b'def'),(100,b'abc'),(101,b'X')]:
         frame=Ether()/IP(src='192.0.2.1',dst='192.0.2.2')/TCP(sport=1234,dport=80,seq=seq,flags='PA')/Raw(body)
@@ -53,7 +53,7 @@ def test_stream_ranges_and_conflicts(tmp_path, monkeypatch):
 
 
 def test_scan_bounds(tmp_path, monkeypatch):
-    monkeypatch.setenv('PKTGEN_CAPTURE_DIR',str(tmp_path))
+    monkeypatch.setenv('PACKETIO_CAPTURE_DIR',str(tmp_path))
     frame=bytes(Ether()/IP(dst='192.0.2.2')/UDP())
     write_pcap(tmp_path/'bounds.pcap',[(frame,1),(frame,2)])
     result=scan_capture('bounds.pcap',max_packets=1)
@@ -107,7 +107,7 @@ def test_extended_builder():
 
 
 def test_kernel_timestamp():
-    from pktgen_mcp.capture import RawInterface
+    from packetio_mcp.capture import RawInterface
     import socket
     class FakeSocket:
         def settimeout(self, value): pass
@@ -122,16 +122,16 @@ def test_kernel_timestamp():
 
 
 def test_runner_validates_before_sending(monkeypatch):
-    from pktgen_mcp import testing
+    from packetio_mcp import testing
     monkeypatch.setattr(testing,'exchange',lambda *a,**k: pytest.fail('must not transmit'))
     invalid=testing.run_test('lo',[{'layers':[ETH,IP4]}],[{'filter':'protocol == arp','unexpected':1}])
     assert not invalid['ok']
 
 
 def test_runner_assertions_and_evidence(tmp_path,monkeypatch):
-    from pktgen_mcp import testing
-    from pktgen_mcp.capture import CapturedFrame, ExchangeResult
-    monkeypatch.setenv('PKTGEN_CAPTURE_DIR',str(tmp_path))
+    from packetio_mcp import testing
+    from packetio_mcp.capture import CapturedFrame, ExchangeResult
+    monkeypatch.setenv('PACKETIO_CAPTURE_DIR',str(tmp_path))
     reply=bytes(Ether()/ARP(op=2,psrc='192.0.2.2'))
     result=ExchangeResult('lo',frames=[CapturedFrame(reply,'lo',0,0,1.1)])
     result.transmissions=[{'send_index':0,'sent_at':1}]

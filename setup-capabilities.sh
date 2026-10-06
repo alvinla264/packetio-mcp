@@ -23,7 +23,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-VENV="${PKTGEN_VENV:-$SCRIPT_DIR/.venv}"
+VENV="${PACKETIO_VENV:-$SCRIPT_DIR/.venv}"
 CAP_BIN="$VENV/bin/python3-capped"
 CAPABILITY="cap_net_raw+ep"
 

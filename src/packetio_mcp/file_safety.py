@@ -72,7 +72,7 @@ def open_regular(path):
 def private_output(path):
     path = Path(path)
     directory = directory_fd(path.parent, create=True)
-    temporary = '.pktgen-' + uuid.uuid4().hex + '.tmp'
+    temporary = '.packetio-' + uuid.uuid4().hex + '.tmp'
     try:
         fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL |
                      os.O_NOFOLLOW | os.O_CLOEXEC, 0o600, dir_fd=directory)

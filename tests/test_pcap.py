@@ -12,8 +12,8 @@ import struct
 
 import pytest
 
-from pktgen_mcp.packets import build_ethernet_frame
-from pktgen_mcp.pcap import (
+from packetio_mcp.packets import build_ethernet_frame
+from packetio_mcp.pcap import (
     DLT_EN10MB,
     PCAP_MAGIC_US,
     PcapError,
@@ -221,15 +221,15 @@ def test_empty_capture_writes_a_valid_header(tmp_path):
 
 
 def test_capture_dir_defaults_and_env_override(monkeypatch):
-    monkeypatch.delenv("PKTGEN_CAPTURE_DIR", raising=False)
+    monkeypatch.delenv("PACKETIO_CAPTURE_DIR", raising=False)
     from pathlib import Path
-    assert capture_dir() == Path.home() / '.local/state/pktgen-mcp/captures'
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", "/tmp/elsewhere")
+    assert capture_dir() == Path.home() / '.local/state/packetio-mcp/captures'
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", "/tmp/elsewhere")
     assert str(capture_dir()) == "/tmp/elsewhere"
 
 
 def test_resolve_capture_path_adds_a_pcap_suffix(monkeypatch, tmp_path):
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path))
     assert resolve_capture_path("run1").name == "run1.pcap"
     assert resolve_capture_path("run2.pcap").name == "run2.pcap"
     assert resolve_capture_path("run3.cap").name == "run3.cap"
@@ -249,26 +249,26 @@ def test_resolve_capture_path_adds_a_pcap_suffix(monkeypatch, tmp_path):
     ],
 )
 def test_resolve_capture_path_rejects_escapes(monkeypatch, tmp_path, filename):
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path))
     with pytest.raises(PcapError):
         resolve_capture_path(filename)
 
 
 def test_resolve_capture_path_allows_a_subdirectory(monkeypatch, tmp_path):
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path))
     resolved = resolve_capture_path("sub/dir/capture")
     assert resolved.name == "capture.pcap"
     assert str(tmp_path) in str(resolved)
 
 
 def test_resolve_capture_path_for_write_creates_the_file_parent(monkeypatch, tmp_path):
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path / "nested"))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path / "nested"))
     resolved = resolve_capture_path("deep/capture", for_write=True)
     assert resolved.parent.is_dir()
 
 
 def test_list_captures_reports_only_capture_files(monkeypatch, tmp_path):
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path))
     (tmp_path / "one.pcap").write_bytes(b"x")
     (tmp_path / "two.cap").write_bytes(b"x")
     (tmp_path / "ignored.txt").write_bytes(b"x")
@@ -279,7 +279,7 @@ def test_list_captures_reports_only_capture_files(monkeypatch, tmp_path):
 
 
 def test_list_captures_on_a_missing_directory_is_empty(monkeypatch, tmp_path):
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path / "nothing_here"))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path / "nothing_here"))
     assert list_captures() == []
 
 

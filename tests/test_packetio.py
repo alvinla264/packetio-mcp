@@ -20,8 +20,8 @@ import struct
 
 import pytest
 
-from pktgen_mcp import server
-from pktgen_mcp.capture import (
+from packetio_mcp import server
+from packetio_mcp.capture import (
     CaptureError,
     RawInterface,
     check_raw_socket_permission,
@@ -29,7 +29,7 @@ from pktgen_mcp.capture import (
     list_interfaces,
     require_raw_socket_permission,
 )
-from pktgen_mcp.packets import (
+from packetio_mcp.packets import (
     ETHERNET_MIN_FRAME_LEN,
     PacketError,
     build_ethernet_frame,
@@ -475,20 +475,20 @@ def test_require_permission_raises_only_when_unavailable():
 
 def test_privilege_message_lists_what_still_works_without_privileges():
     """The error must not imply the whole server is unusable."""
-    from pktgen_mcp.capture import _PRIVILEGE_HELP
+    from packetio_mcp.capture import _PRIVILEGE_HELP
 
     assert "CAP_NET_RAW" in _PRIVILEGE_HELP
     assert "no privileges" in _PRIVILEGE_HELP
     # The remediation command is appended separately, so it must be reachable
     # via the helper rather than hard-coded in the explanation text.
-    from pktgen_mcp.capture import privilege_fix_command
+    from packetio_mcp.capture import privilege_fix_command
 
     assert not privilege_fix_command().startswith('sudo ')
 
 
 def test_privilege_fix_command_is_absolute_and_copy_pasteable():
     """The remediation must work from any working directory."""
-    from pktgen_mcp.capture import privilege_fix_command
+    from packetio_mcp.capture import privilege_fix_command
 
     command = privilege_fix_command()
     import shlex
@@ -498,7 +498,7 @@ def test_privilege_fix_command_is_absolute_and_copy_pasteable():
 
 
 def test_privilege_fix_command_prefers_the_setup_script():
-    from pktgen_mcp.capture import _locate_setup_script, privilege_fix_command
+    from packetio_mcp.capture import _locate_setup_script, privilege_fix_command
 
     script = _locate_setup_script()
     if script is None:
@@ -509,7 +509,7 @@ def test_privilege_fix_command_prefers_the_setup_script():
 
 
 def test_privilege_fix_command_never_caps_shared_python(monkeypatch):
-    import pktgen_mcp.capture as capture
+    import packetio_mcp.capture as capture
 
     monkeypatch.setattr(capture, "_locate_setup_script", lambda: None)
     command = capture.privilege_fix_command()
@@ -519,7 +519,7 @@ def test_privilege_fix_command_never_caps_shared_python(monkeypatch):
 
 
 def test_privilege_help_mentions_what_still_works():
-    from pktgen_mcp.capture import _PRIVILEGE_HELP
+    from packetio_mcp.capture import _PRIVILEGE_HELP
 
     assert "CAP_NET_RAW" in _PRIVILEGE_HELP
     assert "no privileges" in _PRIVILEGE_HELP

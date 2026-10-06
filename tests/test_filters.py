@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from pktgen_mcp.filters import FilterError, compile_filter, frame_matches
+from packetio_mcp.filters import FilterError, compile_filter, frame_matches
 
 TCP_FRAME = {
     "protocol": "tcp",

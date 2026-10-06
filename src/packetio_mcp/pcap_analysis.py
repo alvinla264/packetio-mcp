@@ -54,7 +54,7 @@ def analyze_records(records, *, link_type: int = 1) -> dict:
     if len(records) > MAX_PACKETS or sum(len(r.data) for r in records) > MAX_INPUT_BYTES:
         return {**fallback, "reason": "capture exceeds optional tshark analysis bounds"}
     try:
-        with tempfile.TemporaryDirectory(prefix="pktgen-analysis-") as directory:
+        with tempfile.TemporaryDirectory(prefix="packetio-analysis-") as directory:
             capture = Path(directory) / "input.pcap"
             write_pcap(capture, [(r.data, r.timestamp) for r in records], link_type=link_type)
             with tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:

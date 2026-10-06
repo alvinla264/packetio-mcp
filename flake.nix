@@ -18,22 +18,22 @@
         };
 
         packages.default = pkgs.stdenv.mkDerivation {
-          name = "pktgen-mcp";
+          name = "packetio-mcp";
           src = ./.;
           nativeBuildInputs = [ pkgs.makeWrapper ];
           installPhase = ''
-            mkdir -p $out/bin $out/lib/pktgen-mcp
-            cp -r src $out/lib/pktgen-mcp/src
-            makeWrapper ${pythonEnv}/bin/python3 $out/bin/pktgen-mcp \
-              --add-flags "-m pktgen_mcp.server" \
-              --set PYTHONPATH "$out/lib/pktgen-mcp/src" \
+            mkdir -p $out/bin $out/lib/packetio-mcp
+            cp -r src $out/lib/packetio-mcp/src
+            makeWrapper ${pythonEnv}/bin/python3 $out/bin/packetio-mcp \
+              --add-flags "-m packetio_mcp.server" \
+              --set PYTHONPATH "$out/lib/packetio-mcp/src" \
               --prefix PATH : ${pythonEnv}/bin
           '';
         };
 
         apps.default = {
           type = "app";
-          program = "${self.packages.${system}.default}/bin/pktgen-mcp";
+          program = "${self.packages.${system}.default}/bin/packetio-mcp";
         };
       }
     );

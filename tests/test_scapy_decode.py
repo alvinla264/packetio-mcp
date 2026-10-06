@@ -6,10 +6,10 @@ from scapy.layers.inet import IP, UDP, GRE
 from scapy.layers.dns import DNS, DNSQR
 from scapy.packet import Raw
 
-from pktgen_mcp.decode import decode_link_frame, summarize_frame
-from pktgen_mcp.analysis import summarise_frames
-from pktgen_mcp.pcap import write_pcap
-from pktgen_mcp import server
+from packetio_mcp.decode import decode_link_frame, summarize_frame
+from packetio_mcp.analysis import summarise_frames
+from packetio_mcp.pcap import write_pcap
+from packetio_mcp import server
 
 
 def test_scapy_dns_fields_and_legacy_schema():
@@ -74,7 +74,7 @@ def test_unknown_link_type_is_explicit():
 
 
 def test_pcap_tools_use_link_type_and_prevent_non_ethernet_replay(tmp_path, monkeypatch):
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path))
     write_pcap(tmp_path/"ip.pcap", [(bytes(IP()/UDP()), 1.0)], link_type=228)
     full = server.read_capture_file("ip.pcap", decode="full")
     assert full["ok"]
