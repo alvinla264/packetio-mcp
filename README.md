@@ -9,9 +9,11 @@ and checksums. Bounded capture pages, selected fields, summaries and optional
 Wireshark queries help an AI retrieve evidence without dumping entire captures.
 No arbitrary Python expressions or shell commands are accepted by these tools.
 
-The MCP server identifies itself as `PacketIO`. The distribution/command
-`pktgen-mcp` and Python module `pktgen_mcp` remain unchanged for launcher
-compatibility.
+The repository is [**packetio-mcp**](https://github.com/alvinla264/packetio-mcp),
+and the MCP server identifies itself as **PacketIO**. Use the `packetio-mcp`
+launcher. The Python distribution `pktgen-mcp`, legacy launcher `pktgen-mcp`,
+module `pktgen_mcp`, and existing storage directory retain their original names
+for compatibility; these are internal/legacy identifiers, not the repository name.
 
 See [Known issues and operational limits](KNOWN_ISSUES.md) for unresolved receive
 limitations, client deadlines, backend dependencies and corrected historical
@@ -32,7 +34,7 @@ Keep Wi-Fi/VPN or another adapter for normal connectivity.
 From a checkout of this repository (Python 3.10+ and `uv` required):
 
 ```sh
-cd /path/to/pktgen-mcp
+cd /path/to/packetio-mcp
 uv venv
 uv pip install -e .
 ```
@@ -137,16 +139,16 @@ file reading/writing and bounded protocol dissection. Ethernet construction,
 live AF_PACKET I/O, normalized compatibility fields, filters and summaries
 remain implemented by this server.
 
-Via `uvx` (no clone needed, once published):
+Via `uvx` (no clone needed):
 
 ```sh
-uvx --from git+https://github.com/<you>/pktgen-mcp pktgen-mcp
+uvx --from git+https://github.com/alvinla264/packetio-mcp packetio-mcp
 ```
 
 Locally with `uv`:
 
 ```sh
-uv run pktgen-mcp
+uv run packetio-mcp
 ```
 
 With the bundled nix flake:
@@ -197,7 +199,7 @@ pktgen-mcp: raw packet sockets are unavailable (CAP_NET_RAW is not available to 
 pktgen-mcp: sending and live capture will fail. Available without privileges: build_packet,
 decode_packet, read_capture_file, summarise_capture_file, list_capture_files, describe_*.
 pktgen-mcp: grant CAP_NET_RAW with:
-pktgen-mcp:     /absolute/path/to/pktgen-mcp/setup-capabilities.sh
+pktgen-mcp:     /absolute/path/to/packetio-mcp/setup-capabilities.sh
 pktgen-mcp: then restart this MCP server. This is a one-time step per machine, and is needed
 again only if the virtual environment is rebuilt or the system Python is upgraded.
 ```
@@ -227,6 +229,9 @@ does not, uvx can reuse a stale build and serve an older set of tools. Bump
 uv cache clean pktgen-mcp
 ```
 
+The cache command uses the legacy Python distribution name, not the GitHub
+repository name.
+
 ## MCP client configuration
 
 Assuming the dedicated-interpreter setup above, so the server runs as your
@@ -235,11 +240,11 @@ own user:
 ```json
 {
   "mcpServers": {
-    "pktgen": {
+    "packetio": {
       "type": "stdio",
-      "command": "/absolute/path/to/pktgen-mcp/.venv/bin/python3-capped",
+      "command": "/absolute/path/to/packetio-mcp/.venv/bin/python3-capped",
       "args": ["-m", "pktgen_mcp.server"],
-      "cwd": "/absolute/path/to/pktgen-mcp",
+      "cwd": "/absolute/path/to/packetio-mcp",
       "exposure": "direct"
     }
   }
