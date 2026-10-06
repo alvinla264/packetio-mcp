@@ -1,0 +1,4 @@
+#!/bin/sh
+# Opt in with: git config --local core.hooksPath .githooks
+set -eu
+exec python3 scripts/check_secrets.py

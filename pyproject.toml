@@ -1,0 +1,25 @@
+[project]
+name = "pktgen-mcp"
+version = "0.6.0"
+description = "MCP server for Ethernet packet generation, send/receive, capture analysis and pcap read/write on a local interface"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0,<5",
+    "scapy>=2.6,<3",
+]
+
+[project.scripts]
+pktgen-mcp = "pktgen_mcp.server:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pktgen_mcp"]
