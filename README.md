@@ -1,6 +1,6 @@
-# pktgen-mcp
+# PacketIO
 
-One MCP server for **Ethernet packet generation, capture and evidence-based
+**PacketIO** is one MCP server for **Ethernet packet generation, capture and evidence-based
 packet analysis on real interfaces**.
 
 Use arbitrary raw bytes for unusual protocols or `build_protocol_packet` for
@@ -8,6 +8,10 @@ allowlisted Ethernet/VLAN/QinQ/ARP/IP/UDP/TCP/ICMP layers with automatic lengths
 and checksums. Bounded capture pages, selected fields, summaries and optional
 Wireshark queries help an AI retrieve evidence without dumping entire captures.
 No arbitrary Python expressions or shell commands are accepted by these tools.
+
+The MCP server identifies itself as `PacketIO`. The distribution/command
+`pktgen-mcp` and Python module `pktgen_mcp` remain unchanged for launcher
+compatibility.
 
 See [Known issues and operational limits](KNOWN_ISSUES.md) for unresolved receive
 limitations, client deadlines, backend dependencies and corrected historical

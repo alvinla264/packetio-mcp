@@ -46,7 +46,7 @@ from .pcap import (
     write_pcap,
 )
 
-mcp = FastMCP("PacketGen")
+mcp = FastMCP("PacketIO")
 
 DECODE_MODES = ("none", "summary", "full")
 MAX_CAPTURE_FRAMES = 50_000
