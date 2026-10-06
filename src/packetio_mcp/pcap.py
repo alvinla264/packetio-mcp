@@ -29,7 +29,7 @@ PCAP_MAGIC_NS = 0xA1B23C4D
 DLT_EN10MB = 1
 DEFAULT_SNAPLEN = 262144
 
-DEFAULT_CAPTURE_DIR = str(Path.home() / '.local' / 'state' / 'pktgen-mcp' / 'captures')
+DEFAULT_CAPTURE_DIR = str(Path.home() / '.local' / 'state' / 'packetio-mcp' / 'captures')
 
 
 class PcapError(RuntimeError):
@@ -126,10 +126,10 @@ class PcapFile:
 def capture_dir() -> Path:
     """Return the directory captures are written to.
 
-    Controlled by ``PKTGEN_CAPTURE_DIR`` so a caller supplies a filename while
+    Controlled by ``PACKETIO_CAPTURE_DIR`` so a caller supplies a filename while
     the deployment decides the root.
     """
-    return Path(os.environ.get("PKTGEN_CAPTURE_DIR") or DEFAULT_CAPTURE_DIR)
+    return Path(os.environ.get("PACKETIO_CAPTURE_DIR") or DEFAULT_CAPTURE_DIR)
 
 
 def resolve_capture_path(filename: str, *, for_write: bool = False) -> Path:

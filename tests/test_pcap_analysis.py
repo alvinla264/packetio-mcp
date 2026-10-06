@@ -2,9 +2,9 @@
 import json
 import sys
 
-from pktgen_mcp import pcap_analysis, server
-from pktgen_mcp.pcap import PcapRecord, write_pcap
-from pktgen_mcp.packets import build_ethernet_frame
+from packetio_mcp import pcap_analysis, server
+from packetio_mcp.pcap import PcapRecord, write_pcap
+from packetio_mcp.packets import build_ethernet_frame
 
 
 def records():
@@ -70,7 +70,7 @@ def test_input_bounds_skip_subprocess(monkeypatch):
 
 
 def test_mcp_full_summary_and_filters_keep_compatibility(tmp_path, monkeypatch):
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path))
     write_pcap(tmp_path / "test.pcap", [(r.data, r.timestamp) for r in records()])
     data = [{"_source": {"layers": {"frame": {"frame.protocols": "eth:data"}}}}]
     fake_tshark(tmp_path, monkeypatch, f"print({json.dumps(data)!r})\n")

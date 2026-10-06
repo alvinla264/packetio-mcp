@@ -12,9 +12,9 @@ import time
 
 import pytest
 
-from pktgen_mcp import server
-from pktgen_mcp.capture import check_raw_socket_permission
-from pktgen_mcp.packets import build_ethernet_frame, hex_bytes
+from packetio_mcp import server
+from packetio_mcp.capture import check_raw_socket_permission
+from packetio_mcp.packets import build_ethernet_frame, hex_bytes
 
 ARP_REQUEST = (
     "00 01 08 00 06 04 00 01 02 00 00 00 00 01 "
@@ -48,7 +48,7 @@ live = pytest.mark.skipif(
 @pytest.fixture(autouse=True)
 def capture_dir(tmp_path, monkeypatch):
     """Keep every test's captures inside a temporary directory."""
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path / "captures"))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path / "captures"))
     return tmp_path / "captures"
 
 
@@ -418,7 +418,7 @@ def test_startup_report_warns_on_stderr_when_denied(capsys):
     # The remedy must be a runnable, absolute command, not a bare script name.
     assert 'setup-capabilities.sh' in captured.err
     assert 'sudo "' not in captured.err
-    from pktgen_mcp.capture import _locate_setup_script
+    from packetio_mcp.capture import _locate_setup_script
     assert str(_locate_setup_script()) in captured.err
     assert "one-time" in captured.err
 

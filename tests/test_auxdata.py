@@ -2,8 +2,8 @@
 import socket
 import struct
 import pytest
-from pktgen_mcp.capture import _restore_vlan, RawInterface, CaptureError
-from pktgen_mcp.packets import build_ethernet_frame
+from packetio_mcp.capture import _restore_vlan, RawInterface, CaptureError
+from packetio_mcp.packets import build_ethernet_frame
 
 
 def aux(tci=0, tpid=0, status=1 << 4):

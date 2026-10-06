@@ -1141,14 +1141,14 @@ def _report_startup_privileges() -> None:
     if permitted:
         return
     print(
-        "pktgen-mcp: raw packet sockets are unavailable "
+        "packetio-mcp: raw packet sockets are unavailable "
         f"({reason}).\n"
-        "pktgen-mcp: sending and live capture will fail. Available without "
+        "packetio-mcp: sending and live capture will fail. Available without "
         "privileges: build_packet, decode_packet, read_capture_file, "
         "summarise_capture_file, list_capture_files, describe_*.\n"
-        "pktgen-mcp: grant CAP_NET_RAW with:\n"
-        f"pktgen-mcp:     {privilege_fix_command()}\n"
-        "pktgen-mcp: then restart this MCP server. This is a one-time step per "
+        "packetio-mcp: grant CAP_NET_RAW with:\n"
+        f"packetio-mcp:     {privilege_fix_command()}\n"
+        "packetio-mcp: then restart this MCP server. This is a one-time step per "
         "machine, and is needed again only if the virtual environment is "
         "rebuilt or the system Python is upgraded.",
         file=sys.stderr,

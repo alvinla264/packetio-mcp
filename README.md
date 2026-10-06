@@ -11,9 +11,21 @@ No arbitrary Python expressions or shell commands are accepted by these tools.
 
 The repository is [**packetio-mcp**](https://github.com/alvinla264/packetio-mcp),
 and the MCP server identifies itself as **PacketIO**. Use the `packetio-mcp`
-launcher. The Python distribution `pktgen-mcp`, legacy launcher `pktgen-mcp`,
-module `pktgen_mcp`, and existing storage directory retain their original names
-for compatibility; these are internal/legacy identifiers, not the repository name.
+launcher. The Python distribution is `packetio-mcp`, the import module is
+`packetio_mcp`, and the default storage directory is
+`~/.local/state/packetio-mcp/captures`.
+
+### Upgrading to 0.7.0
+
+This release consistently renames the package, module and launcher. Reinstall
+from the updated GitHub revision and update launch commands to
+`python -m packetio_mcp.server` or `packetio-mcp`. Update any pinned local
+launcher when you deliberately upgrade; an older pinned release is unchanged.
+Capture files are not moved automatically: use `PACKETIO_CAPTURE_DIR` to select
+an existing owner-only directory or copy evidence deliberately. Rename existing
+capture-directory overrides to `PACKETIO_CAPTURE_DIR` and setup overrides to
+`PACKETIO_VENV` when upgrading; older environment-variable names are no longer
+used by this release.
 
 See [Known issues and operational limits](KNOWN_ISSUES.md) for unresolved receive
 limitations, client deadlines, backend dependencies and corrected historical
@@ -85,7 +97,7 @@ Use the absolute dedicated interpreter path in the
 For a manual stdio launch:
 
 ```sh
-.venv/bin/python3-capped -m pktgen_mcp.server
+.venv/bin/python3-capped -m packetio_mcp.server
 ```
 
 This starts an MCP server, not an interactive packet CLI. Ensure `tshark` is on
@@ -113,11 +125,11 @@ Ask your AI client to:
 For a human review of the saved file:
 
 ```sh
-termshark -r "$HOME/.local/state/pktgen-mcp/captures/first-test.pcapng"
+termshark -r "$HOME/.local/state/packetio-mcp/captures/first-test.pcapng"
 ```
 
-The default capture directory is `~/.local/state/pktgen-mcp/captures`; deployments can override it with
-`PKTGEN_CAPTURE_DIR`. Captures may contain sensitive traffic: keep them local,
+The default capture directory is `~/.local/state/packetio-mcp/captures`; deployments can override it with
+`PACKETIO_CAPTURE_DIR`. Captures may contain sensitive traffic: keep them local,
 avoid unrelated interfaces, and do not commit them.
 
 ### Recommended: tshark and termshark
@@ -195,12 +207,12 @@ stderr, never stdout, since stdout carries the JSON-RPC stream, and it ends with
 a complete command that can be pasted from any directory:
 
 ```
-pktgen-mcp: raw packet sockets are unavailable (CAP_NET_RAW is not available to this interpreter).
-pktgen-mcp: sending and live capture will fail. Available without privileges: build_packet,
+packetio-mcp: raw packet sockets are unavailable (CAP_NET_RAW is not available to this interpreter).
+packetio-mcp: sending and live capture will fail. Available without privileges: build_packet,
 decode_packet, read_capture_file, summarise_capture_file, list_capture_files, describe_*.
-pktgen-mcp: grant CAP_NET_RAW with:
-pktgen-mcp:     /absolute/path/to/packetio-mcp/setup-capabilities.sh
-pktgen-mcp: then restart this MCP server. This is a one-time step per machine, and is needed
+packetio-mcp: grant CAP_NET_RAW with:
+packetio-mcp:     /absolute/path/to/packetio-mcp/setup-capabilities.sh
+packetio-mcp: then restart this MCP server. This is a one-time step per machine, and is needed
 again only if the virtual environment is rebuilt or the system Python is upgraded.
 ```
 
@@ -226,11 +238,11 @@ does not, uvx can reuse a stale build and serve an older set of tools. Bump
 `version` in `pyproject.toml` after changing the source, or clear the cache:
 
 ```sh
-uv cache clean pktgen-mcp
+uv cache clean packetio-mcp
 ```
 
-The cache command uses the legacy Python distribution name, not the GitHub
-repository name.
+The cache command uses the Python distribution name, which now matches the
+GitHub repository name.
 
 ## MCP client configuration
 
@@ -243,7 +255,7 @@ own user:
     "packetio": {
       "type": "stdio",
       "command": "/absolute/path/to/packetio-mcp/.venv/bin/python3-capped",
-      "args": ["-m", "pktgen_mcp.server"],
+      "args": ["-m", "packetio_mcp.server"],
       "cwd": "/absolute/path/to/packetio-mcp",
       "exposure": "direct"
     }
@@ -251,7 +263,7 @@ own user:
 }
 ```
 
-`cwd` matters: it is what makes the `pktgen_mcp` package importable without an
+`cwd` matters: it is what makes the `packetio_mcp` package importable without an
 install step. `command` must be absolute, and the capability is on that exact
 file.
 
@@ -672,8 +684,8 @@ tracks at most 2048 flows without retaining frames. Existing summaries retain a
 bounded prefix. Results report scope/truncation; never treat a partial scan as
 complete. Very large/slow scans can reach the time limit before a requested page.
 
-Files are confined to one directory, set by `PKTGEN_CAPTURE_DIR` and defaulting
-to `~/.local/state/pktgen-mcp/captures`. The directory must be owned by the
+Files are confined to one directory, set by `PACKETIO_CAPTURE_DIR` and defaulting
+to `~/.local/state/packetio-mcp/captures`. The directory must be owned by the
 server user and mode 0700. New captures and report sidecars are mode 0600;
 existing outputs are never overwritten. Symlinks and special-file inputs are
 rejected through descriptor-based opens. Tools accept relative filenames, not
@@ -870,7 +882,7 @@ full-capture TCP reassembly or application-decryption contract.
 To make tshark available to a **new** server process without changing the machine:
 
 ```sh
-nix-shell -p wireshark-cli --run '.venv/bin/python3-capped -m pktgen_mcp.server'
+nix-shell -p wireshark-cli --run '.venv/bin/python3-capped -m packetio_mcp.server'
 ```
 
 Changing a parent shell does not change the PATH of an already-running MCP server.

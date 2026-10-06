@@ -5,13 +5,13 @@ from scapy.layers.l2 import Ether
 from scapy.layers.inet import IP, UDP
 from scapy.utils import RawPcapNgWriter
 
-from pktgen_mcp.pcap import read_pcap, write_pcap, resolve_capture_path
-from pktgen_mcp.workflows import protocol_frame, tshark_query
-from pktgen_mcp.server import describe_capabilities, read_capture_file
+from packetio_mcp.pcap import read_pcap, write_pcap, resolve_capture_path
+from packetio_mcp.workflows import protocol_frame, tshark_query
+from packetio_mcp.server import describe_capabilities, read_capture_file
 
 
 def test_pagination(tmp_path, monkeypatch):
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path))
     frame = bytes(Ether()/IP(src="192.0.2.1", dst="192.0.2.2")/UDP())
     write_pcap(tmp_path/"pages.pcap", [(frame, float(i)) for i in range(4)])
     first = read_capture_file("pages.pcap", max_records=2, decode="summary")
@@ -55,8 +55,8 @@ def test_protocol_builder_checksums():
 
 
 def test_mixed_link_pcapng(tmp_path, monkeypatch):
-    from pktgen_mcp.server import summarise_capture_file, replay_capture_file
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path))
+    from packetio_mcp.server import summarise_capture_file, replay_capture_file
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path))
     target = tmp_path/"mixed.pcapng"
     ip = bytes(IP(src="192.0.2.1", dst="192.0.2.2")/UDP())
     ethernet = bytes(Ether()/IP(ip))
@@ -78,8 +78,8 @@ def test_mixed_link_pcapng(tmp_path, monkeypatch):
 
 def test_unanswered_arp(tmp_path, monkeypatch):
     from scapy.layers.l2 import ARP
-    from pktgen_mcp.workflows import unanswered_arp
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path))
+    from packetio_mcp.workflows import unanswered_arp
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path))
     request = Ether(src="02:00:00:00:00:01", dst="ff:ff:ff:ff:ff:ff")/ARP(op=1,
         hwsrc="02:00:00:00:00:01", psrc="192.0.2.1", pdst="192.0.2.2")
     reply = Ether()/ARP(op=2, psrc="192.0.2.2", pdst="192.0.2.1", hwdst="02:00:00:00:00:01")
@@ -100,13 +100,13 @@ def test_builder_rejects_code_and_dns():
 
 
 def test_query_requires_tshark(monkeypatch):
-    monkeypatch.setattr("pktgen_mcp.workflows.shutil.which", lambda _: None)
+    monkeypatch.setattr("packetio_mcp.workflows.shutil.which", lambda _: None)
     assert not tshark_query("absent.pcap", "arp", ["frame.number"])["ok"]
     assert "pcapng" in describe_capabilities()["read_formats"]
 
 
 def test_exchange_spaces_every_frame_and_preserves_reply_window(monkeypatch):
-    from pktgen_mcp import capture
+    from packetio_mcp import capture
     clock = [0.0]
     sent = []
     received = []
@@ -133,7 +133,7 @@ def test_exchange_spaces_every_frame_and_preserves_reply_window(monkeypatch):
 
 
 def test_recv_rejects_other_interfaces():
-    from pktgen_mcp.capture import RawInterface
+    from packetio_mcp.capture import RawInterface
     class FakeSocket:
         def settimeout(self, timeout): pass
         def recvfrom(self, size):
@@ -147,5 +147,5 @@ def test_recv_rejects_other_interfaces():
 
 
 def test_ng_filename(monkeypatch, tmp_path):
-    monkeypatch.setenv("PKTGEN_CAPTURE_DIR", str(tmp_path))
+    monkeypatch.setenv("PACKETIO_CAPTURE_DIR", str(tmp_path))
     assert resolve_capture_path("sample.pcapng").suffix == ".pcapng"
